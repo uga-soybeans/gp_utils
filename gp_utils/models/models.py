@@ -1,12 +1,10 @@
-import os
-os.environ['R_HOME'] = os.getenv('R_HOME')
+import numpy as np
 
 import rpy2.robjects as robjects
 from rpy2.robjects import default_converter
 from rpy2.robjects.conversion import localconverter
 from rpy2.robjects import numpy2ri
 
-import numpy as np
 from sklearn.base import BaseEstimator, RegressorMixin
 
 ################
