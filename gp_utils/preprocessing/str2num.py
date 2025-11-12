@@ -17,7 +17,6 @@ class str2numConverter(TransformerMixin):
     def fit(self, X, y=None):
         """
         Learn allele mapping for each column if needed.
-        
         Does not support monomorphic markers for unlabeled allele-call encoding.
         """
         if not isinstance(X, pd.DataFrame):
@@ -99,7 +98,6 @@ class str2numConverter(TransformerMixin):
         """
         For unlabeled allele calls, determine the reference allele per column
         (alphabetically first allele observed).
-
         Design choice: This function does not allow monomorphic markers
         """
         for col in X.columns:

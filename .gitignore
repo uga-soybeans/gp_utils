@@ -210,5 +210,6 @@ __marimo__/
 # Other
 tests/
 old/
+examples/
 r_requirements.R
 setup.py

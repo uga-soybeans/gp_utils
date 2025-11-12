@@ -16,7 +16,7 @@ Required R packages:
 
 ### Python dependencies
 
-Please make sure **Python (>=3.9)** is installed on your machine.
+Please make sure **Python (>=3.11)** is installed on your machine.
 
 Required Python packages:
 * numpy==2.2.5
