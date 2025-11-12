@@ -19,5 +19,5 @@ dependencies = [
 ]
 
 [tool.setuptools.packages.find]
-include = ["gp_utils"]
+include = ["gp_utils*"]
 exclude = ["old", "tests", "examples"]
