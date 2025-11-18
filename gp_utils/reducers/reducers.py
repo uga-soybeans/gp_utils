@@ -58,4 +58,6 @@ class LassoReducer(BaseEstimator, TransformerMixin):
         '''
         ones_count = [sum(row[i] for row in selects_ind) for i in range(len(selects_ind[0]))] # Compute the number of 1s at each position
         threshold = r * len(selects_ind) # Determine the threshold
+        if threshold > max(ones_count):
+            return np.array(ones_count) > 0 # If threshold too high, return features that have been selected at least once.
         return np.array(ones_count) > threshold # Construct the output list
