@@ -8,11 +8,11 @@ class str2numConverter(TransformerMixin):
     Convert genotype data into standardized numeric encoding {-1, 0, 1}.
     Supports numeric, A/H/B and allele-call encodings.
     '''
-    def __init__(self):
-        # Will store per-column allele mapping rules after fitting
-        self.reference_alleles_ = {}
+    def __init__(self, read_only=False):
+        self.reference_alleles_ = {} # Will store per-column allele mapping rules after fitting
         self.encoding_type_ = None  # 'numeric_-101', 'numeric_012', 'AHB', 'allele_call'
         self.columns_ = None
+        self.read_only = read_only # If True, only validates encoding types without recording and cannot perform transform
 
     def fit(self, X, y=None):
         """
@@ -23,14 +23,15 @@ class str2numConverter(TransformerMixin):
             raise TypeError("Input X must be a pandas DataFrame.")
         
         self.reference_alleles_ = {} # reset reference alleles
-        self.columns_ = X.columns.tolist()
+        if not self.read_only:
+            self.columns_ = X.columns.tolist() # reset marker names
 
         sample_values = X.iloc[0:5].apply(lambda col: col.dropna().unique())
 
         # Detect encoding type automatically
         self.encoding_type_ = self._detect_encoding_type(sample_values)
 
-        if self.encoding_type_ == "allele_call_unlabeled":
+        if not self.read_only and self.encoding_type_ == "allele_call_unlabeled":
             self._learn_reference_alleles(X)
 
         return self
@@ -40,6 +41,9 @@ class str2numConverter(TransformerMixin):
         Convert the dataframe into numeric genotype matrix.
         Returns a numpy array of shape (n_samples, n_markers).
         """
+        if self.read_only:
+            return None
+
         if not isinstance(X, pd.DataFrame):
             raise TypeError("Input X must be a pandas DataFrame.")
 
