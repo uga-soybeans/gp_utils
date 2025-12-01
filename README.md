@@ -1,5 +1,8 @@
 # gp_utils
-UGA Soybean Genomic Prediction Projects Shared Codebase
+UGA Soybean Genomic Prediction Projects Shared Codebase.
+You can install ```gp_utils``` as a package via
+
+```pip install git+https://github.com/uga-soybeans/gp_utils.git@main```
 
 ### R dependencies
 
@@ -11,7 +14,6 @@ Required R packages:
 * rrBLUP
 * EMMREML
 * bWGR
-* Matrix
 * qtl
 
 ### Python dependencies
