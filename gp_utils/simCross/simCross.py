@@ -33,29 +33,31 @@ _sim_cross_func = robjects.r['sim_cross'] # Input is a genetic map robject and t
 ########################################################
 ### Simulate progenies genotypes for a cross p1 x p2 ###
 ########################################################
-def sim_cross_with_genos(p1_geno, p2_geno, n_progeny, genmap):
+def sim_cross_with_genos(p1_geno, p2_geno, n_progeny, genmap, reduce_hetero=False, numeric_hetero_type=0):
     '''
-    # Design choice: supports -1/0/1 encoding only.
     Design choice: supports different encodings. Naively copy values from parents without modification.
 
     Parameters
     ----------
     p1_geno, p2_geno: pandas series
     genmap: robject genetic map object from qtl package
+    reduce_hetero: if True, resample heterozygous markers. Used only when numeric encoding is used.
 
     Return:
     -------
-    # numpy array of shape (n_progeny, len(p1_geno))
     Pandas dataframe of shape (n_progeny, len(p1_geno))
     '''
     progeny_mtx = np.array(_sim_cross_func(genmap, n_progeny))
-    # res = np.zeros(progeny_mtx.shape)
+
+    numeric_marker = p1_geno.apply(lambda x: pd.isna(x) or isinstance(x, (int, float))).all() and p2_geno.apply(lambda x: pd.isna(x) or isinstance(x, (int, float))).all()
+
     res = [[0] * progeny_mtx.shape[1] for _ in range(progeny_mtx.shape[0])]
     for i in range(progeny_mtx.shape[0]):
         for j in range(progeny_mtx.shape[1]):
             source_parent = progeny_mtx[i, j]
-            # val = p1_geno.iloc[j] if source_parent == 1 else p2_geno.iloc[j]
-            # res[i,j] = val if val != 0 else np.random.choice(a=[-1, 0, 1], p=[15/32, 1/16, 15/32])
-            # res[i,j] = p1_geno.iloc[j] if source_parent == 1 else p2_geno.iloc[j]
-            res[i][j] = p1_geno.iloc[j] if source_parent == 1 else p2_geno.iloc[j]
+            val = p1_geno.iloc[j] if source_parent == 1 else p2_geno.iloc[j]
+            if reduce_hetero and numeric_marker:
+                res[i][j] = val if val != numeric_hetero_type else np.random.choice(a=[numeric_hetero_type-1, numeric_hetero_type, numeric_hetero_type+1], p=[15/32, 1/16, 15/32])
+            else:
+                res[i][j] = val
     return pd.DataFrame(columns=p1_geno.index, data=res)
