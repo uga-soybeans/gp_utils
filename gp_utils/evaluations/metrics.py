@@ -2,6 +2,7 @@ import numpy as np
 from scipy import stats
 from sklearn.metrics import make_scorer
 
+
 def pear_metric(a, b):
     '''
     a, b: array-like objects.
@@ -9,6 +10,16 @@ def pear_metric(a, b):
     return stats.pearsonr(a, b)[0]
 
 pear_scorer = make_scorer(pear_metric)
+
+
+def spear_metric(a, b):
+    '''
+    a, b: array-like objects.
+    '''
+    return stats.spearmanr(a, b)[0]
+
+spear_scorer = make_scorer(spear_metric)
+
 
 def top_r_portion_hit_rate(y_true, y_pred, r=0.25):
     '''
@@ -44,3 +55,13 @@ def report_metrics(y_true, y_pred, _r=0.25, rep=None, fold=None):
     res[f"Top {int(_r * 100)}% HR"] = top_r_portion_hit_rate(y_true, y_pred, r=_r)
     res[f"Low {int(_r * 100)}% HR"] = top_r_portion_hit_rate(-y_true, -y_pred, r=_r)
     return res
+
+
+def compute_top_mean(num_lst, r):
+    '''
+    r: [0, 1]
+    Computes the mean of the top r portion of num_lst.
+    '''
+    n = len(num_lst)
+    k = max(1, int(n * r))  # Ensure at least one element is considered
+    return np.mean(sorted(num_lst)[-k:])
