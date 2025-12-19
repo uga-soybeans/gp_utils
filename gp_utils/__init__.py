@@ -17,5 +17,5 @@ __all__ = [
     "NoOpReducer", "LassoReducer",
     "RRBLUPModel", "BayesBModel", "BayesRRModel", "EGBLUPModel",
     "read_cross_func", "map_snp_order_func", "sim_cross_with_genos",
-    "pear_metric", "pear_scorer", "top_r_portion_hit_rate", "report_metrics"
+    "pear_metric", "pear_scorer", "spear_metric", "spear_scorer", "top_r_portion_hit_rate", "report_metrics", "compute_top_mean"
 ]
