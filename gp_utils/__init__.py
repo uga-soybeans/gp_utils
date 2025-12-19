@@ -10,7 +10,7 @@ from .preprocessing import str2numConverter
 from .reducers import NoOpReducer, LassoReducer
 from .models import RRBLUPModel, BayesBModel, BayesRRModel, EGBLUPModel
 from .simCross import read_cross_func, map_snp_order_func, sim_cross_with_genos
-from .evaluations import pear_metric, pear_scorer, top_r_portion_hit_rate, report_metrics
+from .evaluations import pear_metric, pear_scorer, spear_metric, spear_scorer, top_r_portion_hit_rate, report_metrics, compute_top_mean
 
 __all__ = [
     "str2numConverter",
