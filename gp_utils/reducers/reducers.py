@@ -18,12 +18,12 @@ class NoOpReducer(BaseEstimator, TransformerMixin):
 
 
 class LassoReducer(BaseEstimator, TransformerMixin):
-    def __init__(self, alpha, max_iter, test_size, n_reps, r):
+    def __init__(self, alpha=0.1, r=0.1, test_size=0.2, n_reps=200, max_iter=10000):
         self.alpha = alpha
-        self.max_iter = max_iter
-        self.n_reps = n_reps
-        self.test_size = test_size
         self.r = r
+        self.test_size = test_size
+        self.n_reps = n_reps
+        self.max_iter = max_iter
         self.selects_ind = [] # lst[lst[bool]]
 
     def fit(self, X, y):
