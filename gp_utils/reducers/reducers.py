@@ -18,13 +18,14 @@ class NoOpReducer(BaseEstimator, TransformerMixin):
 
 
 class LassoReducer(BaseEstimator, TransformerMixin):
-    def __init__(self, alpha=0.1, r=0.1, test_size=0.2, n_reps=200, max_iter=10000):
+    def __init__(self, alpha=0.1, r=0.1, test_size=0.2, n_reps=200, max_iter=10000, random_state=42):
         self.alpha = alpha
         self.r = r
         self.test_size = test_size
         self.n_reps = n_reps
         self.max_iter = max_iter
         self.selects_ind = [] # lst[lst[bool]]
+        self.random_state = random_state
 
     def fit(self, X, y):
         '''
@@ -34,7 +35,7 @@ class LassoReducer(BaseEstimator, TransformerMixin):
         self.selects_ind = []
         for i in range(self.n_reps):
             X_tr, _, y_tr, _ = train_test_split(X, y, test_size=self.test_size, random_state=i)
-            l_model = Lasso(alpha=self.alpha, max_iter=self.max_iter).fit(X_tr, y_tr)
+            l_model = Lasso(alpha=self.alpha, max_iter=self.max_iter, random_state=self.random_state).fit(X_tr, y_tr)
 
             select = abs(l_model.coef_) > 0
             self.selects_ind.append(select)
