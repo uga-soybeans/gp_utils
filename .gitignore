@@ -210,6 +210,8 @@ __marimo__/
 # Other
 tests/
 old/
+data/
 examples/
 r_requirements.R
 setup.py
+*.csv

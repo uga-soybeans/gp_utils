@@ -21,6 +21,7 @@ Required R packages:
 Please make sure **Python (>=3.11)** is installed on your machine.
 
 Required Python packages:
+* feature_engine==1.9.3
 * numpy==2.2.5
 * pandas==2.2.3
 * rpy2==3.4.5

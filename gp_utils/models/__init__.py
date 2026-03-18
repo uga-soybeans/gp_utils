@@ -1,8 +1,10 @@
-from .models import RRBLUPModel, BayesBModel, BayesRRModel, EGBLUPModel
+from .models import RRBLUPModel, BayesAModel, BayesBModel, BayesLASSOModel, EGBLUPModel, init_model
 
 __all__ = [
     "RRBLUPModel",
+    "BayesAModel",
     "BayesBModel",
-    "BayesRRModel",
-    "EGBLUPModel"
+    "BayesLASSOModel",
+    "EGBLUPModel",
+    "init_model"
 ]

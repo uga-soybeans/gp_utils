@@ -6,8 +6,12 @@ from sklearn.linear_model import Lasso, LinearRegression
 
 from feature_engine.selection import SmartCorrelatedSelection
 
+# from ..evaluations import pear_scorer
 from evaluations import pear_scorer
 
+#######################
+### Custom reducers ###
+#######################
 class NoOpReducer(BaseEstimator, TransformerMixin):
     '''
     X: numpy array or pandas dataframe
@@ -66,30 +70,34 @@ class LassoReducer(BaseEstimator, TransformerMixin):
             return np.array(ones_count) > 0 # If threshold too high, return features that have been selected at least once.
         return np.array(ones_count) > threshold # Construct the output list
     
-
-def init_reducer(reducer: str, reducer_params: dict, random_state: int = 42):
+######################
+### Initialization ###
+######################
+def init_reducer(reducer_name: str, reducer_params: dict, random_state: int = 42):
     '''
     Initialize a reducer with the given hyperparameters.
     
     reducer_params: Hyperparameter setting for the specified reducer.
                     Different reducers have completely different hyperparameters.
+                    Warning: Custom parameter names may not agree with original argument names in function or class defintion.
+                             The current implementation should be able to interpret both.
     '''
-    if reducer == "NoFS":
+    if reducer_name == "NoFS":
         model = NoOpReducer()
-    elif reducer == "CFS":
+    elif reducer_name == "CFS":
         model = SmartCorrelatedSelection(
-            threshold=reducer_params['corr_threshold'],
+            threshold=reducer_params['threshold'] if 'threshold' in reducer_params else reducer_params['corr_threshold'],
             estimator=LinearRegression(),
             scoring=pear_scorer,
             selection_method="model_performance"
         )
-    elif reducer == "LASSOFS":
+    elif reducer_name == "LASSOFS":
         model = LassoReducer(
             alpha=reducer_params['alpha'],
             max_iter=10000,
-            test_size=1-reducer_params['sample_size'],
+            test_size=reducer_params['test_size'] if 'test_size' in reducer_params else (1-reducer_params['sample_size']),
             n_reps=reducer_params['n_reps'],
-            r=reducer_params['threshold'],
+            r=reducer_params['r'] if 'r' in reducer_params else reducer_params['threshold'],
             random_state=random_state
         )
     else:

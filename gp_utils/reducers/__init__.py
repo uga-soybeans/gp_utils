@@ -1,6 +1,7 @@
-from .reducers import NoOpReducer, LassoReducer
+from .reducers import NoOpReducer, LassoReducer, init_reducer
 
 __all__ = [
     "NoOpReducer",
-    "LassoReducer"
+    "LassoReducer",
+    "init_reducer"
 ]

@@ -277,49 +277,51 @@ class EGBLUPModel(BaseEstimator, RegressorMixin):
 
         return total_pred
 
-
-def init_model(algorithm: str, algo_params: dict, random_state: int = 42):
+######################
+### Initialization ###
+######################
+def init_model(model_name: str, model_params: dict, random_state: int = 42):
     '''
     Initialize a regressor model with the given hyperparameters.
     
-    algo_params: Hyperparameters setting for the specified algorithm.
-                 Different algorithms have completely different hyperparameters.
+    model_params: Hyperparameters setting for the specified algorithm.
+                  Different algorithms have completely different hyperparameters.
     '''
-    if algorithm == "RRBLUP":
+    if model_name == "RRBLUP":
         model = RRBLUPModel()
-    elif algorithm == "BayesA":
+    elif model_name == "BayesA":
         model = BayesAModel()
-    elif algorithm == "BayesB":
+    elif model_name == "BayesB":
         model = BayesBModel()
-    elif algorithm == "BayesLASSO":
+    elif model_name == "BayesLASSO":
         model = BayesLASSOModel()
-    elif algorithm == "EGBLUP":
+    elif model_name == "EGBLUP":
         model = EGBLUPModel()
-    elif algorithm == "EN":
+    elif model_name == "EN":
         model = ElasticNet(
-            alpha=algo_params["alpha"],
-            l1_ratio=algo_params["l1_ratio"],
+            alpha=model_params["alpha"],
+            l1_ratio=model_params["l1_ratio"],
             max_iter=10000,
             random_state=random_state,
         )
-    elif algorithm == "RFR":
+    elif model_name == "RFR":
         model = RandomForestRegressor(
-            n_estimators=algo_params["n_estimators"],
-            max_depth=algo_params["max_depth"],
-            max_features=algo_params["max_features"],
+            n_estimators=model_params["n_estimators"],
+            max_depth=model_params["max_depth"],
+            max_features=model_params["max_features"],
             random_state=random_state,
         )
-    elif algorithm == "GBR":
+    elif model_name == "GBR":
         model = GradientBoostingRegressor(
-            n_estimators=algo_params["n_estimators"],
-            max_depth=algo_params["max_depth"],
-            max_features=algo_params["max_features"],
+            n_estimators=model_params["n_estimators"],
+            max_depth=model_params["max_depth"],
+            max_features=model_params["max_features"],
             random_state=random_state,
         )
-    elif algorithm == "SVR":
+    elif model_name == "SVR":
         model = SVR(
-            kernel=algo_params["kernel"]
+            kernel=model_params["kernel"]
         )
     else:
-        raise ValueError("Unsupported algorithm")
+        raise ValueError("Unsupported regression model")
     return model
