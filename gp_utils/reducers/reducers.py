@@ -2,8 +2,11 @@ import numpy as np
 
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import Lasso
+from sklearn.linear_model import Lasso, LinearRegression
 
+from feature_engine.selection import SmartCorrelatedSelection
+
+from evaluations import pear_scorer
 
 class NoOpReducer(BaseEstimator, TransformerMixin):
     '''
@@ -62,3 +65,33 @@ class LassoReducer(BaseEstimator, TransformerMixin):
         if threshold > max(ones_count):
             return np.array(ones_count) > 0 # If threshold too high, return features that have been selected at least once.
         return np.array(ones_count) > threshold # Construct the output list
+    
+
+def init_reducer(reducer: str, reducer_params: dict, random_state: int = 42):
+    '''
+    Initialize a reducer with the given hyperparameters.
+    
+    reducer_params: Hyperparameter setting for the specified reducer.
+                    Different reducers have completely different hyperparameters.
+    '''
+    if reducer == "NoFS":
+        model = NoOpReducer()
+    elif reducer == "CFS":
+        model = SmartCorrelatedSelection(
+            threshold=reducer_params['corr_threshold'],
+            estimator=LinearRegression(),
+            scoring=pear_scorer,
+            selection_method="model_performance"
+        )
+    elif reducer == "LASSOFS":
+        model = LassoReducer(
+            alpha=reducer_params['alpha'],
+            max_iter=10000,
+            test_size=1-reducer_params['sample_size'],
+            n_reps=reducer_params['n_reps'],
+            r=reducer_params['threshold'],
+            random_state=random_state
+        )
+    else:
+        raise ValueError("Unsupported reducer")
+    return model

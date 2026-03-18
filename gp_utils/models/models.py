@@ -6,6 +6,9 @@ from rpy2.robjects.conversion import localconverter
 from rpy2.robjects import numpy2ri
 
 from sklearn.base import BaseEstimator, RegressorMixin
+from sklearn.linear_model import ElasticNet
+from sklearn.svm import SVR
+from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 
 ################
 ### R models ###
@@ -273,3 +276,50 @@ class EGBLUPModel(BaseEstimator, RegressorMixin):
             return total_pred[train_length:]
 
         return total_pred
+
+
+def init_model(algorithm: str, algo_params: dict, random_state: int = 42):
+    '''
+    Initialize a regressor model with the given hyperparameters.
+    
+    algo_params: Hyperparameters setting for the specified algorithm.
+                 Different algorithms have completely different hyperparameters.
+    '''
+    if algorithm == "RRBLUP":
+        model = RRBLUPModel()
+    elif algorithm == "BayesA":
+        model = BayesAModel()
+    elif algorithm == "BayesB":
+        model = BayesBModel()
+    elif algorithm == "BayesLASSO":
+        model = BayesLASSOModel()
+    elif algorithm == "EGBLUP":
+        model = EGBLUPModel()
+    elif algorithm == "EN":
+        model = ElasticNet(
+            alpha=algo_params["alpha"],
+            l1_ratio=algo_params["l1_ratio"],
+            max_iter=10000,
+            random_state=random_state,
+        )
+    elif algorithm == "RFR":
+        model = RandomForestRegressor(
+            n_estimators=algo_params["n_estimators"],
+            max_depth=algo_params["max_depth"],
+            max_features=algo_params["max_features"],
+            random_state=random_state,
+        )
+    elif algorithm == "GBR":
+        model = GradientBoostingRegressor(
+            n_estimators=algo_params["n_estimators"],
+            max_depth=algo_params["max_depth"],
+            max_features=algo_params["max_features"],
+            random_state=random_state,
+        )
+    elif algorithm == "SVR":
+        model = SVR(
+            kernel=algo_params["kernel"]
+        )
+    else:
+        raise ValueError("Unsupported algorithm")
+    return model
