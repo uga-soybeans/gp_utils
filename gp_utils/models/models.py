@@ -49,6 +49,45 @@ class RRBLUPModel(BaseEstimator, RegressorMixin):
         return X @ self.u + self.beta
 
 
+class BayesAModel(BaseEstimator, RegressorMixin):
+    def __init__(self):
+        self.beta = None
+        self.u = None
+
+    def fit(self, X, y):
+        '''
+        X: numpy array or output of feature-engine.
+        y: pandas series.
+        '''
+        if type(X) != np.ndarray:
+            X = X.values
+        robjects.r('''
+            ba_fit <- function(X, y) {
+            library(bWGR)
+            model <- wgr(y=as.numeric(y), iv=TRUE, pi=0, X=as.matrix(X)+1)
+            return(model)
+            }
+        ''')
+        fit_func = robjects.r['ba_fit']
+        with localconverter(default_converter + numpy2ri.converter):
+            model = fit_func(X, y.values)
+        with localconverter(default_converter + numpy2ri.converter):
+            self.u = np.array(model.rx2("b"))
+            self.beta = np.array(model.rx2("mu"))
+        self.is_fitted_ = True
+        return self
+    
+    def predict(self, X):
+        '''
+        X: numpy array or output of feature-engine.
+        '''
+        if (not self.is_fitted_) or (self.beta is None) or (self.u is None):
+            raise ValueError("Model has not been trained.")
+        if type(X) != np.ndarray:
+            X = X.values
+        return (X + 1) @ self.u + self.beta
+    
+
 class BayesBModel(BaseEstimator, RegressorMixin):
     def __init__(self):
         self.beta = None
@@ -88,7 +127,46 @@ class BayesBModel(BaseEstimator, RegressorMixin):
         return (X + 1) @ self.u + self.beta
 
 
-class BayesRRModel(BaseEstimator, RegressorMixin):
+# class BayesRRModel(BaseEstimator, RegressorMixin):
+#     def __init__(self):
+#         self.beta = None
+#         self.u = None
+
+#     def fit(self, X, y):
+#         '''
+#         X: numpy array or output of feature-engine.
+#         y: pandas series.
+#         '''
+#         if type(X) != np.ndarray:
+#             X = X.values
+#         robjects.r('''
+#             brr_fit <- function(X, y) {
+#             library(bWGR)
+#             model <- wgr(y=as.numeric(y), iv=FALSE, pi=0, X=as.matrix(X)+1)
+#             return(model)
+#             }
+#         ''')
+#         fit_func = robjects.r['brr_fit']
+#         with localconverter(default_converter + numpy2ri.converter):
+#             model = fit_func(X, y.values)
+#         with localconverter(default_converter + numpy2ri.converter):
+#             self.u = np.array(model.rx2("b"))
+#             self.beta = np.array(model.rx2("mu"))
+#         self.is_fitted_ = True
+#         return self
+    
+#     def predict(self, X):
+#         '''
+#         X: numpy array or output of feature-engine.
+#         '''
+#         if (not self.is_fitted_) or (self.beta is None) or (self.u is None):
+#             raise ValueError("Model has not been trained.")
+#         if type(X) != np.ndarray:
+#             X = X.values
+#         return (X + 1) @ self.u + self.beta
+    
+
+class BayesLASSOModel(BaseEstimator, RegressorMixin):
     def __init__(self):
         self.beta = None
         self.u = None
@@ -101,13 +179,13 @@ class BayesRRModel(BaseEstimator, RegressorMixin):
         if type(X) != np.ndarray:
             X = X.values
         robjects.r('''
-            brr_fit <- function(X, y) {
+            bl_fit <- function(X, y) {
             library(bWGR)
-            model <- wgr(y=as.numeric(y), iv=FALSE, pi=0, X=as.matrix(X)+1)
+            model <- wgr(y=as.numeric(y), de=TRUE, pi=0, X=as.matrix(X)+1)
             return(model)
             }
         ''')
-        fit_func = robjects.r['brr_fit']
+        fit_func = robjects.r['bl_fit']
         with localconverter(default_converter + numpy2ri.converter):
             model = fit_func(X, y.values)
         with localconverter(default_converter + numpy2ri.converter):
