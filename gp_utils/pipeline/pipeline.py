@@ -33,14 +33,14 @@ def init_pipeline(reducer_name: str, model_name: str, preprocess_params: dict, r
     dropconstant = DropConstantFeatures(missing_values='ignore')
     str2num = str2numConverter()
     imp = SimpleImputer(missing_values=np.nan, strategy=preprocess_params['imputation-strategy'], fill_value=preprocess_params['imputation-fill-value'])
-    scaler = StandardScaler()
+    # scaler = StandardScaler()
     reducer_model = init_reducer(reducer_name=reducer_name, reducer_params=reducer_params, random_state=random_state)
     regressor_model = init_model(model_name=model_name, model_params=model_params, random_state=random_state)
     return Pipeline([
         ('dropconstant', dropconstant),
         ('converter', str2num),
         ('imputer', imp),
-        ('scaler', scaler),
+        # ('scaler', scaler),
         (reducer_name, reducer_model),
         (model_name, regressor_model)
     ])
@@ -64,6 +64,8 @@ def train_pipeline(
     '''
     Train a reducer + regressor pipeline or perform gridsearch and record results.
 
+    X_train, y_train: marker matrix (w/o sample names) and phenotype series (w/o sample names).
+    
     reducer_param_grid, model_param_grid: Dictionaries of the form {'RFR__n_estimators': [100, 200, 400], 'RFR__max_depth': [3, 4, 8]} if not None
                                           Warning: Unlike reducer initialization, parameters MUST match the original argument names in function or class definition.
 
