@@ -6,8 +6,8 @@ from sklearn.linear_model import Lasso, LinearRegression
 
 from feature_engine.selection import SmartCorrelatedSelection
 
-# from ..evaluations import pear_scorer
-from evaluations import pear_scorer
+from ..evaluations import pear_scorer
+# from evaluations import pear_scorer
 
 #######################
 ### Custom reducers ###

@@ -9,14 +9,14 @@ from sklearn.preprocessing import StandardScaler
 
 from feature_engine.selection import DropConstantFeatures
 
-from preprocessing import str2numConverter
-from reducers import init_reducer
-from models import init_model
-from evaluations import pear_scorer
-# from ..preprocessing import str2numConverter
-# from ..reducers import init_reducer
-# from ..models import init_model
-# from ..evaluations import pear_scorer
+# from preprocessing import str2numConverter
+# from reducers import init_reducer
+# from models import init_model
+# from evaluations import pear_scorer
+from ..preprocessing import str2numConverter
+from ..reducers import init_reducer
+from ..models import init_model
+from ..evaluations import pear_scorer
 
 def init_pipeline(reducer_name: str, model_name: str, preprocess_params: dict, reducer_params: dict, model_params: dict, random_state: int = 42):
     '''
