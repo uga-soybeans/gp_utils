@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "gp_utils"
-version = "0.1.0"
+version = "0.2.0"
 description = "Utility package for genomic prediction models"
 authors = [{ name = "UGA soybean lab", email = "ugasoybeans@gmail.com"}]
 readme = "README.md"
