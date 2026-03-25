@@ -1,6 +1,6 @@
 import numpy as np
 from scipy import stats
-from sklearn.metrics import make_scorer
+from sklearn.metrics import make_scorer, mean_absolute_error, mean_squared_error
 
 
 def pear_metric(a, b):
@@ -52,6 +52,8 @@ def report_metrics(y_true, y_pred, _r=0.25, rep=None, fold=None):
         res["rep"] = rep 
         res["fold"] = fold
     res["Pearson's r"] = pear_metric(y_true, y_pred)
+    res["MSE"] = mean_squared_error(y_true, y_pred)
+    res["MAE"] = mean_absolute_error(y_true, y_pred)
     res[f"Top {int(_r * 100)}% HR"] = top_r_portion_hit_rate(y_true, y_pred, r=_r)
     res[f"Low {int(_r * 100)}% HR"] = top_r_portion_hit_rate(-y_true, -y_pred, r=_r)
     return res
